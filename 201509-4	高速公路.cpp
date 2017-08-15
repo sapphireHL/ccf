@@ -22,7 +22,6 @@ int index = 0;
 vector<int> stac;
 bool instack[N];
 
-//Tarjan算法  80%
 void tarjan(int u){
 	DFN[u] = LOW[u] = ++index; //初始化
 	stac.push_back(u); //入栈
@@ -40,16 +39,17 @@ void tarjan(int u){
 	}
 	//找到一个强连通图的根节点,将该节点之后的节点都出栈
 	if (DFN[u] == LOW[u]){
-		int tmp = stac.back();
-		int count = 1;
-		while (tmp != u){
+		int tmp = 0;
+		int count = 0;
+		do{
+			count++;
+			tmp = stac.back();
 			stac.pop_back();
 			instack[tmp] = false;
-			tmp = stac.back();
-			count++;
-		}
-		stac.pop_back();
-		res += count*(count - 1) / 2;
+		} 
+		while (tmp != u);
+		if (count!=0)
+			res += count*(count - 1) / 2;
 	}
 }
 
