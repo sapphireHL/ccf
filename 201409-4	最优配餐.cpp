@@ -15,8 +15,6 @@ using namespace std;
 const int N = 1010;
 
 int g[N][N] = { 0 };
-vector<pair<int, int> > shop;
-map<pair<int, int>, int> order;
 long long res = 0;
 int n, m, k, d, a, b, c;
 int mintime[N][N];//到达各个点的最短时间
@@ -37,10 +35,12 @@ void bfs(){
 				int nexty = cur.second + dir[i][1];
 				if (nextx < 1 || nextx > n || nexty < 1 || nexty > n) continue;
 				if (visited[nextx][nexty]) continue;
-				if (g[nextx][nexty] == 1) continue;
+				if (g[nextx][nexty] >= 1){
+					res += g[nextx][nexty] * time;
+				}
 				q.push(pair<int, int>(nextx, nexty));
-				visited[nextx][nexty] = 1;
-				mintime[nextx][nexty] = min(time, mintime[nextx][nexty]);
+				visited[nextx][nexty] = true;
+				mintime[nextx][nexty] = time;
 			}
 		}
 		time++;
@@ -57,7 +57,6 @@ int main(){
 	}
 	for (int i = 0; i < m; i++){
 		cin >> a >> b;
-		shop.push_back(pair<int, int>(a, b));
 		q.push(pair<int, int>(a, b));//多个起点入队列
 		mintime[a][b] = 0;
 		visited[a][b] = true;
@@ -65,21 +64,15 @@ int main(){
 	for (int i = 0; i < k; i++){
 		cin >> a >> b >> c;
 		pair<int, int> tmp = pair<int, int>(a, b);
-		order[tmp] += c;
+		g[a][b] += c;
 	}
 	for (int i = 0; i < d; i++){
 		cin >> a >> b;
-		g[a][b] = 1;
+		visited[a][b] = true;
 	}
 
 	bfs();
 
-	for (map<pair<int, int>, int>::iterator i = order.begin(); i != order.end(); i++){
-		pair<int, int> dst = i->first;
-		int num = i->second;
-		int low = mintime[dst.first][dst.second];
-		res += low*num;
-	}
 	cout << res << endl;
 	return 0;
 }
